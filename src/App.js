@@ -5,7 +5,9 @@ import RegisterPage from "./components/RegisterPage/RegisterPage";
 import MainPage from "./components/MainPage/MainPage";
 import firebase from "./firebase";
 import { useDispatch, useSelector } from "react-redux";
-import { setUser } from "./redux/actions/user_action";
+import { clearUser, setUser } from "./redux/actions/user_action";
+import Header from "./components/Sides/Header";
+import Tail from "./components/Sides/Tail";
 
 function App() {
   let history = useHistory();
@@ -20,20 +22,25 @@ function App() {
         // 리덕스 스토어에 유저정보 저장
         dispatch(setUser(user));
       } else {
-        history.push("/login");
+        history.push("/");
+        dispatch(clearUser());
       }
     });
-  }, [dispatch, history]);
+  }, []);
 
   if (isLoading) {
     return <div>...Loading</div>;
   } else {
     return (
-      <Switch>
-        <Route exact path="/" component={MainPage} />
-        <Route exact path="/login" component={LoginPage} />
-        <Route exact path="/register" component={RegisterPage} />
-      </Switch>
+      <>
+        <Header />
+        <Switch>
+          <Route exact path="/" component={MainPage} />
+          <Route exact path="/login" component={LoginPage} />
+          <Route exact path="/register" component={RegisterPage} />
+        </Switch>
+        <Tail />
+      </>
     );
   }
 }

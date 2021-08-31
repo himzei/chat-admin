@@ -17,6 +17,7 @@ import { applyMiddleware, createStore } from "redux";
 import promiseMiddleware from "redux-promise";
 import ReduxThunk from "redux-thunk";
 import Reducer from "./redux/reducer";
+import { HelmetProvider, Helmet } from "react-helmet-async";
 
 const createStoreWithMiddleware = applyMiddleware(
   promiseMiddleware,
@@ -24,19 +25,25 @@ const createStoreWithMiddleware = applyMiddleware(
 )(createStore);
 
 ReactDOM.render(
-  <React.StrictMode>
-    <Provider
-      store={createStoreWithMiddleware(
-        Reducer,
-        window.__REDUX_DEVTOOLS_EXTENSION__ &&
-          window.__REDUX_DEVTOOLS_EXTENSION__()
-      )}
-    >
-      <Router>
-        <App />
-      </Router>
-    </Provider>
-  </React.StrictMode>,
+  <HelmetProvider>
+    <React.StrictMode>
+      <Provider
+        store={createStoreWithMiddleware(
+          Reducer,
+          window.__REDUX_DEVTOOLS_EXTENSION__ &&
+            window.__REDUX_DEVTOOLS_EXTENSION__()
+        )}
+      >
+        <Router>
+          <App>
+            <Helmet>
+              <title>종만세무</title>
+            </Helmet>
+          </App>
+        </Router>
+      </Provider>
+    </React.StrictMode>
+  </HelmetProvider>,
   document.getElementById("root")
 );
 

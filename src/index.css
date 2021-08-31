@@ -134,3 +134,12 @@ hr {
   padding: 10px 20px;
   border-radius: 4px;
 }
+
+.w-100 {
+  position: relative;
+  top: 0;
+  width: 100% !important;
+  height: 75vh;
+  object-fit: cover;
+  z-index: 0;
+}

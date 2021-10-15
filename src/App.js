@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { clearUser, setUser } from "./redux/actions/user_action";
 import Header from "./components/Sides/Header";
 import Tail from "./components/Sides/Tail";
+import CreateMember from "./components/StatusPage/CreateMember";
 
 function App() {
   let history = useHistory();
@@ -26,7 +27,7 @@ function App() {
         dispatch(clearUser());
       }
     });
-  }, []);
+  });
 
   if (isLoading) {
     return <div>...Loading</div>;
@@ -38,6 +39,7 @@ function App() {
           <Route exact path="/" component={MainPage} />
           <Route exact path="/login" component={LoginPage} />
           <Route exact path="/register" component={RegisterPage} />
+          <Route exact path="/create-member" component={CreateMember} />
         </Switch>
         <Tail />
       </>

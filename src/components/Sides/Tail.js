@@ -6,34 +6,7 @@ import { SiBloglovin } from "react-icons/si";
 function Tail() {
   return (
     <div className="">
-      <div className=" py-4  border-t-2">
-        <div className="max-w-5xl mx-auto py-2">
-          <div className="flex">
-            <img
-              className="mr-6"
-              src="images/logo1.png"
-              width="110px"
-              height="50px"
-              alt="logo1"
-            />
-            <img
-              className="mr-3"
-              src="images/logo2.png"
-              width="140px"
-              height="50px"
-              alt="logo2"
-            />
-            <img
-              className="mr-3"
-              src="images/logo3.png"
-              width="140px"
-              height="50px"
-              alt="logo3"
-            />
-          </div>
-          <div></div>
-        </div>
-      </div>
+      <div className=" py-4  border-t-2"></div>
       <div className="border-t-2 bg-gray-100">
         <div className="max-w-5xl mx-auto flex justify-between items-center py-6">
           <div>

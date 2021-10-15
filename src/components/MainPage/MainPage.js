@@ -1,211 +1,273 @@
-import React, { useRef, useEffect } from "react";
-import Carousel from "react-bootstrap/Carousel";
-import { FcAbout, FcStatistics, FcServices } from "react-icons/fc";
-
-const options = {
-  //지도를 생성할 때 필요한 기본 옵션
-  center: new window.kakao.maps.LatLng(35.75360626185865, 129.3246331340595), //지도의 중심좌표.
-  level: 3, //지도의 레벨(확대, 축소 정도)
-};
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import firebase from "../../firebase";
+import Moment from "moment";
+import CountDday from "./CountDday";
+import ArraysDays from "./ArraysDays";
 
 function MainPage() {
-  const container = useRef(null);
+  const [people, setPeople] = useState([]);
+  const [count, setCount] = useState(0);
+
   useEffect(() => {
-    let map = new window.kakao.maps.Map(container.current, options); //지도 생성 및 객체 리턴
-
-    let markerPosition = new window.kakao.maps.LatLng(
-      35.75360626185865,
-      129.3246331340595
-    );
-    let marker = new window.kakao.maps.Marker({
-      position: markerPosition,
-    });
-    marker.setMap(map);
-    return () => {};
+    firebase
+      .firestore()
+      .collection("lectures")
+      .orderBy("createdAt", "desc")
+      .onSnapshot((snapshot) => {
+        const posts = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setPeople(posts);
+        setCount(posts.length);
+      });
   }, []);
-
   return (
     <>
-      <div style={{ zIndex: 1, transform: "translate(0, -100px)" }}>
-        <Carousel varient="dark" fade interval={4000}>
-          <Carousel.Item>
-            <img
-              className="w-100"
-              src="https://images.unsplash.com/photo-1524758631624-e2822e304c36?ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80"
-              alt="First slide"
-            />
-            <Carousel.Caption>
-              <h5>First slide label</h5>
-              <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
-            </Carousel.Caption>
-          </Carousel.Item>
-          <Carousel.Item>
-            <img
-              className="w-100"
-              src="https://images.unsplash.com/photo-1630343710506-89f8b9f21d31?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80"
-              alt="Second slide"
-            />
-            <Carousel.Caption>
-              <h5>Second slide label</h5>
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-            </Carousel.Caption>
-          </Carousel.Item>
-          <Carousel.Item>
-            <img
-              className="w-100"
-              src="https://images.unsplash.com/photo-1630329800719-58e1f63c73ab?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=805"
-              alt="Third slide"
-            />
-            <Carousel.Caption>
-              <h5>Third slide label</h5>
-              <p>
-                Praesent commodo cursus magna, vel scelerisque nisl consectetur.
-              </p>
-            </Carousel.Caption>
-          </Carousel.Item>
-        </Carousel>
-      </div>
-      <div className="max-w-5xl mx-auto flex flex-col text-center mb-20">
-        <h1>
-          <span className="text-red-400">상속세</span>를{" "}
-          <span className="text-red-400">빠르고 정확하게</span> 해결하는 방법
-        </h1>
-        <h3 className="font-light text-xl">상속세전문 종만세무</h3>
-        <div className="flex justify-between mt-12">
-          <div className="flex flex-col px-24 border-l-2 border-r-2">
-            <FcAbout className=" text-9xl" />
-            <h2 className="text-xl mt-4">세무 세무 종만법인</h2>
-          </div>
-          <div className="flex flex-col">
-            <FcStatistics className=" text-9xl" />
-            <h2 className="text-xl mt-4">세무 세무 종만법인</h2>
-          </div>
-          <div className="flex flex-col  px-24 border-l-2 border-r-2">
-            <FcServices className=" text-9xl" />
-            <h2 className="text-xl mt-4">세무 세무 종만법인</h2>
-          </div>
-        </div>
-        <h2 className="mt-20 text-2xl text-blue-400">
-          최고의 상속세 신고를 알아보세요 &rarr;
-        </h2>
-      </div>
-
-      <div
-        className="py-20"
-        style={{
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundImage:
-            "url('https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=967&q=80')",
-        }}
-      >
-        <div className="max-w-5xl mx-auto flex flex-col text-center mb-10">
-          <div className="grid grid-cols-2 gap-12">
-            <div className="w-full">
-              <div>
-                <div className="flex justify-between">
-                  <h4>세무회계뉴스</h4>
-                  <span className="text-3xl mb-2">+</span>
-                </div>
-                <span className="flex justify-between">
-                  <h5 className="text-lg font-light">
-                    자영업자가 꼭 실천해야 할 절세 전략
-                  </h5>
-                  <h6 className="text-lg font-light">2021-08-01</h6>
-                </span>
-                <span className="flex justify-between">
-                  <h5 className="text-lg font-light">
-                    자영업자가 꼭 실천해야 할 절세 전략
-                  </h5>
-                  <h6 className="text-lg font-light">2021-08-01</h6>
-                </span>
-                <span className="flex justify-between">
-                  <h5 className="text-lg font-light">
-                    자영업자가 꼭 실천해야 할 절세 전략
-                  </h5>
-                  <h6 className="text-lg font-light">2021-08-01</h6>
-                </span>
-              </div>
+      <div className="flex flex-col">
+        <div className="flex mb-4 mr-4 justify-end ">
+          <Link to="create-member">
+            <div className="mx-2 bg-blue-400 py-2 px-3 rounded text-white">
+              등록하기
             </div>
-            <div className="w-full">
-              <div>
-                <div className="flex justify-between">
-                  <h4>세무회계뉴스</h4>
-                  <span className="text-3xl mb-2">+</span>
-                </div>
-                <span className="flex justify-between">
-                  <h5 className="text-lg font-light">
-                    자영업자가 꼭 실천해야 할 절세 전략
-                  </h5>
-                  <h6 className="text-lg font-light">2021-08-01</h6>
-                </span>
-                <span className="flex justify-between">
-                  <h5 className="text-lg font-light">
-                    자영업자가 꼭 실천해야 할 절세 전략
-                  </h5>
-                  <h6 className="text-lg font-light">2021-08-01</h6>
-                </span>
-                <span className="flex justify-between">
-                  <h5 className="text-lg font-light">
-                    자영업자가 꼭 실천해야 할 절세 전략
-                  </h5>
-                  <h6 className="text-lg font-light">2021-08-01</h6>
-                </span>
-              </div>
+          </Link>
+        </div>
+        <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+          <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+            <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50 border-1">
+                  <tr>
+                    <th
+                      rowspan="2"
+                      scope="col"
+                      className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider text-center border-1"
+                    >
+                      No
+                    </th>
+                    <th
+                      rowspan="2"
+                      scope="col"
+                      className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider text-center border-1"
+                    >
+                      <div className="text-sm font-medium text-gray-900">
+                        최초등록
+                      </div>
+                      <div className="text-sm font-medium text-gray-900">
+                        업데이트
+                      </div>
+                    </th>
+                    <th
+                      rowspan="2"
+                      scope="col"
+                      className="px-4 py-3 text-sm font-medium text-gray-900 uppercase tracking-wider text-center border-1"
+                    >
+                      수업정보
+                    </th>
+                    <th
+                      rowspan="2"
+                      scope="col"
+                      className="px-4 py-3 text-sm font-medium text-gray-900 uppercase tracking-wider text-center border-1"
+                    >
+                      학생정보
+                    </th>
+                    <th
+                      rowspan="2"
+                      scope="col"
+                      className="px-4 py-3 text-sm font-medium text-gray-900 uppercase tracking-wider text-center border-1"
+                    >
+                      수업강사
+                    </th>
+                    <th
+                      rowspan="2"
+                      scope="col"
+                      className="px-4 py-3  text-xs text-gray-500 uppercase tracking-wider text-center border-1"
+                    >
+                      <div className="text-sm font-medium text-gray-900">
+                        수업기간
+                      </div>
+                      <div className="text-sm font-medium text-gray-900">
+                        남은날짜
+                      </div>
+                    </th>
+                    <th
+                      rowspan="2"
+                      scope="col"
+                      className="px-4 py-3 text-xs  text-gray-500 uppercase tracking-wider text-center border-1"
+                    >
+                      <div className="text-sm font-medium text-gray-900">
+                        수업요일
+                      </div>
+                      <div className="text-sm font-medium text-gray-900">
+                        수업시간
+                      </div>
+                    </th>
+                    <th
+                      colspan="2"
+                      scope="col"
+                      className=" px-4 text-center py-1 text-sm font-medium text-gray-900 border-1"
+                    >
+                      수업횟수
+                    </th>
+                    <th
+                      colspan="3"
+                      scope="col"
+                      className=" px-4 text-center py-1 text-sm font-medium text-gray-900 border-1"
+                    >
+                      출결
+                    </th>
+                    <th
+                      colspan="3"
+                      scope="col"
+                      className=" px-4 text-center py-1 text-sm font-medium text-gray-900 border-1"
+                    >
+                      홀드
+                    </th>
+                    <th
+                      rowspan="2"
+                      scope="col"
+                      className="px-4 py-3  text-xs text-gray-500 uppercase tracking-wider text-center border-1"
+                    ></th>
+                  </tr>
+                  <tr className="">
+                    <th
+                      scope="col"
+                      className="px-2 py-1 text-center text-sm font-medium text-gray-900 border-1"
+                    >
+                      <span className="">전체</span>
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-2 py-1 text-center text-sm font-medium text-gray-900 border-1"
+                    >
+                      <span className="">남은</span>
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-2 py-1 text-center text-sm font-medium text-gray-900 border-1"
+                    >
+                      <span className="">출석</span>
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-2 py-1 text-center text-sm font-medium text-gray-900 border-1"
+                    >
+                      <span className="">결석</span>
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-2 py-1 text-center text-sm font-medium text-gray-900 border-1"
+                    >
+                      <span className="">취소</span>
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-2 py-1 text-center text-sm font-medium text-gray-900 border-1"
+                    >
+                      <span className="">S</span>
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-2 py-1 text-center text-sm font-medium text-gray-900 border-1"
+                    >
+                      <span className="">T</span>
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-2 py-1 text-center text-sm font-medium text-gray-900 border-1"
+                    >
+                      <span className="">A</span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {people.map((person, index) => (
+                    <tr key={person.id}>
+                      <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                        {count - index}
+                      </td>
+                      <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                        <div className="text-sm text-gray-900">
+                          {Moment(person.createdAt).format("YYYY-MM-DD")}
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          {Moment(person.updateddAt).format("YYYY-MM-DD")}
+                        </div>
+                      </td>
+                      <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                        {person.lecTitle}
+                      </td>
+                      <td className="px-3 py-4 whitespace-nowrap">
+                        <div className="flex items-center justify-center">
+                          <div className="flex-shrink-0 h-10 w-10">
+                            <img
+                              className="h-10 w-10 rounded-full"
+                              src={person.sImage}
+                              alt=""
+                            />
+                          </div>
+                          <div className="ml-4">
+                            <div className="text-sm font-medium text-gray-900">
+                              {person.sName}
+                            </div>
+                            <div className="text-sm text-gray-500">
+                              {person.sEmail}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-3 py-4 whitespace-nowrap text-center">
+                        {person.lecTeacher}
+                      </td>
+                      <td className="px-3 py-4 whitespace-nowrap text-center">
+                        <div className="text-sm font-medium text-gray-900">
+                          {person.lecStart}~{person.lecEnd}
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          <CountDday dday={person.lecEnd} />
+                        </div>
+                      </td>
+                      <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                        <div className="text-sm font-medium text-gray-900">
+                          {person.lecDate}
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          {person.lecPeriod}
+                        </div>
+                      </td>
+                      <td className="px-3 py-4 text-center text-sm font-medium">
+                        <ArraysDays
+                          startDate={person.lecStart}
+                          endDate={person.lecEnd}
+                          lecDate={person.lecDate}
+                        />
+                      </td>
+                      <td className="px-3 py-4 text-center text-sm font-medium">
+                        <ArraysDays
+                          startDate={Moment(new Date()).format("YYYY-MM-DD")}
+                          endDate={person.lecEnd}
+                          lecDate={person.lecDate}
+                        />
+                      </td>
+                      <td className="px-3 py-4 text-center text-sm font-medium "></td>
+                      <td className="px-3 py-4 text-center text-sm font-medium "></td>
+                      <td className="px-3 py-4 text-center text-sm font-medium "></td>
+                      <td className="px-3 py-4 text-center text-sm font-medium "></td>
+                      <td className="px-3 py-4 text-center text-sm font-medium "></td>
+                      <td className="px-3 py-4 text-center text-sm font-medium "></td>
+                      <td className="px-3 py-4 text-center text-sm font-medium">
+                        <div className="mx-2 bg-green-400 py-2 px-1 rounded text-white">
+                          수정하기
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
-          <div className="bg-white py-10 mt-10">
-            <span className="flex ml-4 font-medium text-xl mb-4 mx-4">
-              상담신청하기
-            </span>
-            <form className="flex flex-col">
-              <input
-                className="border p-2 mx-4 mb-2"
-                type="text"
-                placeholder="이름"
-              />
-              <input
-                className="border p-2 mx-4 mb-2"
-                type="text"
-                placeholder="전화번호"
-              />
-              <input
-                className="border p-2 mx-4 mb-2"
-                type="text"
-                placeholder="이메일"
-              />
-              <textarea
-                className="border p-2 mx-4 mb-2"
-                rows="6"
-                placeholder="문의하기"
-              ></textarea>
-              <div className="flex justify-end">
-                <input
-                  type="submit"
-                  className="py-2 w-28 mx-4 bg-blue-400 text-white rounded"
-                  value="전송하기"
-                />
-              </div>
-            </form>
-          </div>
         </div>
-      </div>
-      <div>
-        <img src="images/profile.jpg" alt="profile" />
-      </div>
-      <div className="max-w-5xl mx-auto my-20 flex flex-col">
-        <div>
-          <h2 className="font-medium border-b-2 pb-2">오시는길</h2>
-          <h3 className="text-2xl mt-2">
-            서울시 서초구 서초중앙로2길 42, 202호(서초동, 갑목빌딩)
-          </h3>
-          <h4 className="text-xl font-light mb-4">남부터미널역 3번 출구</h4>
-        </div>
-        <div
-          className="map"
-          ref={container}
-          style={{ width: "100%", height: "500px" }}
-        ></div>
       </div>
     </>
   );

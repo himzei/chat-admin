@@ -16,7 +16,6 @@ function ArraysDays({ startDate, endDate, lecDate }) {
     dates.push(Moment(theDate).format("dddd").slice(0, 1));
     theDate.setDate(theDate.getDate() + 1);
   }
-  console.log(dates);
 
   let counts = 0;
 

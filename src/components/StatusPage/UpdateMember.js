@@ -1,49 +1,69 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import firebase from "../../firebase";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import md5 from "md5";
+import { data } from "autoprefixer";
 
-function CreateMember() {
+function UpdateMember() {
   const [loading, setLoading] = useState(false);
-  const { register, handleSubmit, errors } = useForm({ mode: "onChange" });
+  const [people, setPeople] = useState([]);
+  const { register, handleSubmit, errors } = useForm();
+  let { id } = useParams();
 
   const history = useHistory();
 
-  const onSubmit = async (data) => {
-    try {
-      setLoading(true);
+  const getPost = async () => {
+    const posts = await firebase
+      .firestore()
+      .collection("lectures")
+      .doc(`${id}`)
+      .get();
+    setPeople(posts.data());
+  };
 
-      await firebase
-        .firestore()
-        .collection("lectures")
-        .add({
-          sName: data.sName,
-          sEmail: data.sEmail,
-          sImage: `http://gravatar.com/avatar/${md5(data.sEmail)}?d-identicon`,
-          lecTitle: data.lecTitle,
-          lecTeacher: data.lecTeacher,
-          lecStart: data.lecStart,
-          lecEnd: data.lecEnd,
-          lecDate1: data.lecDate1,
-          lecDate2: data.lecDate2,
-          lecDate3: data.lecDate3,
-          lecDate4: data.lecDate4,
-          lecDate5: data.lecDate5,
-          lecDate6: data.lecDate6,
-          lecDate7: data.lecDate7,
-          lecStartTime: data.lecStartTime,
-          lecPeriod: data.lecPeriod,
-          createdAt: Date.now(),
+  useEffect(() => {
+    getPost();
+  });
 
-          views: 0,
-        });
+  const onSubmit = async (e, data) => {
+    console.log(data);
 
-      setLoading(false);
-      history.push("/");
-    } catch (error) {
-      alert(error);
-    }
+    // try {
+    //   setLoading(true);
+
+    //   await firebase
+    //     .firestore()
+    //     .collection("lectures")
+    //     .add({
+    //       sName: data.sName,
+    //       sEmail: data.sEmail,
+    //       sImage: `http://gravatar.com/avatar/${md5(data.sEmail)}?d-identicon`,
+    //       lecTitle: data.lecTitle,
+    //       lecTeacher: data.lecTeacher,
+    //       lecStart: data.lecStart,
+    //       lecEnd: data.lecEnd,
+    //       lecDate: [
+    //         data.lecDate1,
+    //         data.lecDate2,
+    //         data.lecDate3,
+    //         data.lecDate4,
+    //         data.lecDate5,
+    //         data.lecDate6,
+    //         data.lecDate7,
+    //       ],
+    //       lecStartTime: data.lecStartTime,
+    //       lecPeriod: data.lecPeriod,
+    //       createdAt: Date.now(),
+
+    //       views: 0,
+    //     });
+
+    //   setLoading(false);
+    //   history.push("/");
+    // } catch (error) {
+    //   alert(error);
+    // }
   };
   return (
     <div>
@@ -72,17 +92,16 @@ function CreateMember() {
                             name="sName"
                             id="sName"
                             className="focus:ring-indigo-500 focus:border-indigo-500 border flex-1 block w-full rounded-none rounded-md sm:text-sm border-gray-300 px-2 py-1 text-sm"
-                            placeholder="제목을 입력해주세요"
+                            value={people.sName}
                             ref={register({ required: true })}
                           />
                         </div>
                         <div className="">
-                          {errors.content &&
-                            errors.content.type === "required" && (
-                              <p className=" text-red-500 font-light">
-                                제목을 입력하셔야 합니다.
-                              </p>
-                            )}
+                          {errors.sName && errors.sName.type === "required" && (
+                            <p className=" text-red-500 font-light">
+                              학생이름을 입력하셔야 합니다.
+                            </p>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -124,8 +143,9 @@ function CreateMember() {
                             name="sEmail"
                             id="sEmail"
                             className="focus:ring-indigo-500 focus:border-indigo-500 border flex-1 block w-full rounded-none rounded-md sm:text-sm border-gray-300 px-2 py-1 text-sm"
-                            placeholder="제목을 입력해주세요"
+                            placeholder="이메일을 입력해주세요"
                             ref={register({ required: true })}
+                            value={people.sEmail}
                           />
                         </div>
                         <div className="">
@@ -159,6 +179,7 @@ function CreateMember() {
                         autoComplete="lecTitle"
                         className="mt-1 block w-full py-1 px-2 border border-gray-300 text-gray-400 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm"
                         ref={register({ required: true })}
+                        value={people.lecTitle}
                       >
                         <option value="1:1 화상영어">1:1 화상영어</option>
                         <option value="1:4 화상영어">1:4 화상영어</option>
@@ -178,6 +199,7 @@ function CreateMember() {
                         autoComplete="category"
                         className="mt-1 block w-full py-1 px-2 border border-gray-300 text-gray-400 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm"
                         ref={register({ required: true })}
+                        value={people.lecTeacher}
                       >
                         <option value="IISD_Lya">IISD_Lya</option>
                         <option value="lornasantos">lornasantos</option>
@@ -199,15 +221,16 @@ function CreateMember() {
                             name="lecStart"
                             id="lecStart"
                             className="focus:ring-indigo-500 focus:border-indigo-500 border flex-1 block w-full rounded-none rounded-md sm:text-sm border-gray-300 px-2 py-1 text-sm"
-                            placeholder="제목을 입력해주세요"
+                            placeholder="시작날짜를 입력해주세요"
                             ref={register({ required: true })}
+                            value={people.lecStart}
                           />
                         </div>
                         <div className="">
-                          {errors.content &&
-                            errors.content.type === "required" && (
+                          {errors.lecStart &&
+                            errors.lecStart.type === "required" && (
                               <p className=" text-red-500 font-light">
-                                제목을 입력하셔야 합니다.
+                                시작날짜를 입력하셔야 합니다.
                               </p>
                             )}
                         </div>
@@ -226,15 +249,16 @@ function CreateMember() {
                             name="lecEnd"
                             id="lecEnd"
                             className="focus:ring-indigo-500 focus:border-indigo-500 border flex-1 block w-full rounded-none rounded-md sm:text-sm border-gray-300 px-2 py-1 text-sm"
-                            placeholder="제목을 입력해주세요"
+                            placeholder="종료날짜를 입력해주세요"
                             ref={register({ required: true })}
+                            value={people.lecEnd}
                           />
                         </div>
                         <div className="">
                           {errors.lecEnd &&
                             errors.lecEnd.type === "required" && (
                               <p className=" text-red-500 font-light">
-                                제목을 입력하셔야 합니다.
+                                종료날짜를 입력하셔야 합니다.
                               </p>
                             )}
                         </div>
@@ -255,6 +279,7 @@ function CreateMember() {
                               id="lecDate"
                               name="lecDate1"
                               type="checkbox"
+                              defaultChecked={people.lecDate1}
                               value="월"
                               className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
                               ref={register()}
@@ -276,6 +301,7 @@ function CreateMember() {
                               name="lecDate2"
                               type="checkbox"
                               value="화"
+                              defaultChecked={people.lecDate2}
                               className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
                               ref={register()}
                             />
@@ -296,6 +322,7 @@ function CreateMember() {
                               name="lecDate3"
                               type="checkbox"
                               value="수"
+                              defaultChecked={people.lecDate3}
                               className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
                               ref={register()}
                             />
@@ -316,6 +343,7 @@ function CreateMember() {
                               name="lecDate4"
                               type="checkbox"
                               value="목"
+                              defaultChecked={people.lecDate4}
                               className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
                               ref={register()}
                             />
@@ -336,6 +364,7 @@ function CreateMember() {
                               name="lecDate5"
                               type="checkbox"
                               value="금"
+                              defaultChecked={people.lecDate5}
                               className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
                               ref={register()}
                             />
@@ -356,6 +385,7 @@ function CreateMember() {
                               name="lecDate6"
                               type="checkbox"
                               value="토"
+                              defaultChecked={people.lecDate6}
                               className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
                               ref={register()}
                             />
@@ -376,6 +406,7 @@ function CreateMember() {
                               name="lecDate7"
                               type="checkbox"
                               value="일"
+                              defaultChecked={people.lecDate7}
                               className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
                               ref={register()}
                             />
@@ -407,8 +438,9 @@ function CreateMember() {
                             name="lecStartTime"
                             id="sName"
                             className="focus:ring-indigo-500 focus:border-indigo-500 border flex-1 block w-full rounded-none rounded-md sm:text-sm border-gray-300 px-2 py-1 text-sm"
-                            placeholder="제목을 입력해주세요"
+                            placeholder="수업시작시간을 입력해주세요"
                             ref={register({ required: true })}
+                            value={people.lecStartTime}
                           />
                         </div>
                       </div>
@@ -425,6 +457,7 @@ function CreateMember() {
                           autoComplete="category"
                           className="mt-1 block w-full py-1 px-2 border border-gray-300 text-gray-400 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm"
                           ref={register({ required: true })}
+                          value={people.lecPeriod}
                         >
                           <option value="25분">25분</option>
                           <option value="50분">50분</option>
@@ -450,4 +483,4 @@ function CreateMember() {
   );
 }
 
-export default CreateMember;
+export default UpdateMember;

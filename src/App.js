@@ -9,6 +9,7 @@ import { clearUser, setUser } from "./redux/actions/user_action";
 import Header from "./components/Sides/Header";
 import Tail from "./components/Sides/Tail";
 import CreateMember from "./components/StatusPage/CreateMember";
+import UpdateMember from "./components/StatusPage/UpdateMember";
 
 function App() {
   let history = useHistory();
@@ -40,6 +41,7 @@ function App() {
           <Route exact path="/login" component={LoginPage} />
           <Route exact path="/register" component={RegisterPage} />
           <Route exact path="/create-member" component={CreateMember} />
+          <Route exact path="/update-member/:id" component={UpdateMember} />
         </Switch>
         <Tail />
       </>

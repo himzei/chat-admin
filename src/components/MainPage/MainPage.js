@@ -9,6 +9,13 @@ function MainPage() {
   const [people, setPeople] = useState([]);
   const [count, setCount] = useState(0);
 
+  const onDeleteClick = async (id) => {
+    const ok = window.confirm("삭제하시겠습니까?");
+    if (ok) {
+      await firebase.firestore().collection("lectures").doc(`${id}`).delete();
+    }
+  };
+
   useEffect(() => {
     firebase
       .firestore()
@@ -230,7 +237,15 @@ function MainPage() {
                       </td>
                       <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
                         <div className="text-sm font-medium text-gray-900">
-                          {person.lecDate}
+                          {[
+                            person.lecDate1,
+                            person.lecDate2,
+                            person.lecDate3,
+                            person.lecDate4,
+                            person.lecDate5,
+                            person.lecDate6,
+                            person.lecDate7,
+                          ]}
                         </div>
                         <div className="text-sm text-gray-500">
                           {person.lecPeriod}
@@ -240,14 +255,35 @@ function MainPage() {
                         <ArraysDays
                           startDate={person.lecStart}
                           endDate={person.lecEnd}
-                          lecDate={person.lecDate}
+                          lecDate={[
+                            person.lecDate1,
+                            person.lecDate2,
+                            person.lecDate3,
+                            person.lecDate4,
+                            person.lecDate5,
+                            person.lecDate6,
+                            person.lecDate7,
+                          ]}
                         />
                       </td>
                       <td className="px-3 py-4 text-center text-sm font-medium">
                         <ArraysDays
-                          startDate={Moment(new Date()).format("YYYY-MM-DD")}
+                          startDate={
+                            Moment(new Date()).format("YYYY-MM-DD") >
+                            person.lecStart
+                              ? Moment(new Date()).format("YYYY-MM-DD")
+                              : person.lecStart
+                          }
                           endDate={person.lecEnd}
-                          lecDate={person.lecDate}
+                          lecDate={[
+                            person.lecDate1,
+                            person.lecDate2,
+                            person.lecDate3,
+                            person.lecDate4,
+                            person.lecDate5,
+                            person.lecDate6,
+                            person.lecDate7,
+                          ]}
                         />
                       </td>
                       <td className="px-3 py-4 text-center text-sm font-medium "></td>
@@ -257,8 +293,19 @@ function MainPage() {
                       <td className="px-3 py-4 text-center text-sm font-medium "></td>
                       <td className="px-3 py-4 text-center text-sm font-medium "></td>
                       <td className="px-3 py-4 text-center text-sm font-medium">
-                        <div className="mx-2 bg-green-400 py-2 px-1 rounded text-white">
-                          수정하기
+                        <div className="flex flex-col">
+                          <Link to={`update-member/${person.id}`}>
+                            <div className="bg-green-400 py-1 px-1 rounded text-white mb-1">
+                              수정하기
+                            </div>
+                          </Link>
+
+                          <div
+                            className="bg-red-500 py-1 px-1 rounded text-white"
+                            onClick={() => onDeleteClick(person.id)}
+                          >
+                            삭제하기
+                          </div>
                         </div>
                       </td>
                     </tr>

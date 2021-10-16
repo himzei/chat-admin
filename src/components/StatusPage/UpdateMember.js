@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form";
 import firebase from "../../firebase";
 import { useHistory, useParams } from "react-router-dom";
 import md5 from "md5";
-import { data } from "autoprefixer";
 
 function UpdateMember() {
   const [loading, setLoading] = useState(false);
@@ -26,45 +25,45 @@ function UpdateMember() {
     getPost();
   });
 
-  const onSubmit = async (e, data) => {
+  const onSubmit = async (data) => {
     console.log(data);
 
-    // try {
-    //   setLoading(true);
+    try {
+      setLoading(true);
 
-    //   await firebase
-    //     .firestore()
-    //     .collection("lectures")
-    //     .add({
-    //       sName: data.sName,
-    //       sEmail: data.sEmail,
-    //       sImage: `http://gravatar.com/avatar/${md5(data.sEmail)}?d-identicon`,
-    //       lecTitle: data.lecTitle,
-    //       lecTeacher: data.lecTeacher,
-    //       lecStart: data.lecStart,
-    //       lecEnd: data.lecEnd,
-    //       lecDate: [
-    //         data.lecDate1,
-    //         data.lecDate2,
-    //         data.lecDate3,
-    //         data.lecDate4,
-    //         data.lecDate5,
-    //         data.lecDate6,
-    //         data.lecDate7,
-    //       ],
-    //       lecStartTime: data.lecStartTime,
-    //       lecPeriod: data.lecPeriod,
-    //       createdAt: Date.now(),
+      await firebase
+        .firestore()
+        .collection("lectures")
+        .doc(`${id}`)
+        .update({
+          sName: data.sName,
+          sEmail: data.sEmail,
+          sImage: `http://gravatar.com/avatar/${md5(data.sEmail)}?d-identicon`,
+          lecTitle: data.lecTitle,
+          lecTeacher: data.lecTeacher,
+          lecStart: data.lecStart,
+          lecEnd: data.lecEnd,
+          lecDate1: data.lecDate1,
+          lecDate2: data.lecDate2,
+          lecDate3: data.lecDate3,
+          lecDate4: data.lecDate4,
+          lecDate5: data.lecDate5,
+          lecDate6: data.lecDate6,
+          lecDate7: data.lecDate7,
+          lecStartTime: data.lecStartTime,
+          lecPeriod: data.lecPeriod,
+          updatedAt: Date.now(),
 
-    //       views: 0,
-    //     });
+          views: 0,
+        });
 
-    //   setLoading(false);
-    //   history.push("/");
-    // } catch (error) {
-    //   alert(error);
-    // }
+      setLoading(false);
+      history.push("/");
+    } catch (error) {
+      alert(error);
+    }
   };
+
   return (
     <div>
       <div className=" max-w-5xl mx-auto">
@@ -92,8 +91,9 @@ function UpdateMember() {
                             name="sName"
                             id="sName"
                             className="focus:ring-indigo-500 focus:border-indigo-500 border flex-1 block w-full rounded-none rounded-md sm:text-sm border-gray-300 px-2 py-1 text-sm"
-                            value={people.sName}
+                            defaultValue={people.sName}
                             ref={register({ required: true })}
+                            onChange={(e) => setPeople(e.target.value)}
                           />
                         </div>
                         <div className="">
@@ -145,7 +145,7 @@ function UpdateMember() {
                             className="focus:ring-indigo-500 focus:border-indigo-500 border flex-1 block w-full rounded-none rounded-md sm:text-sm border-gray-300 px-2 py-1 text-sm"
                             placeholder="이메일을 입력해주세요"
                             ref={register({ required: true })}
-                            value={people.sEmail}
+                            defaultValue={people.sEmail}
                           />
                         </div>
                         <div className="">
@@ -179,7 +179,7 @@ function UpdateMember() {
                         autoComplete="lecTitle"
                         className="mt-1 block w-full py-1 px-2 border border-gray-300 text-gray-400 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm"
                         ref={register({ required: true })}
-                        value={people.lecTitle}
+                        defaultValue={people.lecTitle}
                       >
                         <option value="1:1 화상영어">1:1 화상영어</option>
                         <option value="1:4 화상영어">1:4 화상영어</option>
@@ -199,7 +199,7 @@ function UpdateMember() {
                         autoComplete="category"
                         className="mt-1 block w-full py-1 px-2 border border-gray-300 text-gray-400 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm"
                         ref={register({ required: true })}
-                        value={people.lecTeacher}
+                        defaultValue={people.lecTeacher}
                       >
                         <option value="IISD_Lya">IISD_Lya</option>
                         <option value="lornasantos">lornasantos</option>
@@ -223,7 +223,7 @@ function UpdateMember() {
                             className="focus:ring-indigo-500 focus:border-indigo-500 border flex-1 block w-full rounded-none rounded-md sm:text-sm border-gray-300 px-2 py-1 text-sm"
                             placeholder="시작날짜를 입력해주세요"
                             ref={register({ required: true })}
-                            value={people.lecStart}
+                            defaultValue={people.lecStart}
                           />
                         </div>
                         <div className="">
@@ -251,7 +251,7 @@ function UpdateMember() {
                             className="focus:ring-indigo-500 focus:border-indigo-500 border flex-1 block w-full rounded-none rounded-md sm:text-sm border-gray-300 px-2 py-1 text-sm"
                             placeholder="종료날짜를 입력해주세요"
                             ref={register({ required: true })}
-                            value={people.lecEnd}
+                            defaultValue={people.lecEnd}
                           />
                         </div>
                         <div className="">
@@ -440,7 +440,7 @@ function UpdateMember() {
                             className="focus:ring-indigo-500 focus:border-indigo-500 border flex-1 block w-full rounded-none rounded-md sm:text-sm border-gray-300 px-2 py-1 text-sm"
                             placeholder="수업시작시간을 입력해주세요"
                             ref={register({ required: true })}
-                            value={people.lecStartTime}
+                            defaultValue={people.lecStartTime}
                           />
                         </div>
                       </div>
@@ -457,7 +457,7 @@ function UpdateMember() {
                           autoComplete="category"
                           className="mt-1 block w-full py-1 px-2 border border-gray-300 text-gray-400 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm"
                           ref={register({ required: true })}
-                          value={people.lecPeriod}
+                          defaultValue={people.lecPeriod}
                         >
                           <option value="25분">25분</option>
                           <option value="50분">50분</option>

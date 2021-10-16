@@ -9,6 +9,11 @@ function MainPage() {
   const [people, setPeople] = useState([]);
   const [count, setCount] = useState(0);
 
+  const onHoldClick = () => {
+    const lecEnd = "2021-10-30";
+    console.log(Moment(lecEnd).format("dddd").slice(0, 1));
+  };
+
   const onDeleteClick = async (id) => {
     const ok = window.confirm("삭제하시겠습니까?");
     if (ok) {
@@ -166,7 +171,7 @@ function MainPage() {
                       scope="col"
                       className="px-2 py-1 text-center text-sm font-medium text-gray-900 border-1"
                     >
-                      <span className="">취소</span>
+                      <span className="">홀드</span>
                     </th>
                     <th
                       scope="col"
@@ -294,6 +299,12 @@ function MainPage() {
                       <td className="px-3 py-4 text-center text-sm font-medium "></td>
                       <td className="px-3 py-4 text-center text-sm font-medium">
                         <div className="flex flex-col">
+                          <div
+                            className="bg-blue-500 py-1 px-1 rounded text-white mb-1"
+                            onClick={() => onHoldClick()}
+                          >
+                            홀드하기
+                          </div>
                           <Link to={`update-member/${person.id}`}>
                             <div className="bg-green-400 py-1 px-1 rounded text-white mb-1">
                               수정하기

@@ -26,8 +26,6 @@ function UpdateMember() {
   });
 
   const onSubmit = async (data) => {
-    console.log(data);
-
     try {
       setLoading(true);
 

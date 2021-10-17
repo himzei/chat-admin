@@ -2,7 +2,7 @@ import React from "react";
 import "moment/locale/ko";
 import Moment from "moment";
 
-function ArraysDays({ startDate, endDate, lecDate }) {
+function ArraysDays({ startDate, endDate, lecDate, lecHold }) {
   const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
   const firstDate = new Date(startDate);
   const secondDate = new Date(endDate);
@@ -27,7 +27,7 @@ function ArraysDays({ startDate, endDate, lecDate }) {
     }
   }
 
-  return <div>{counts}</div>;
+  return <div>{counts - lecHold}</div>;
 }
 
 export default ArraysDays;

@@ -1,5 +1,6 @@
 import React from "react";
 import { MdAccountBalance } from "react-icons/md";
+import { Link } from "react-router-dom";
 
 function Header() {
   return (
@@ -11,7 +12,9 @@ function Header() {
         <div>
           <ul className="flex font-medium text-xl">
             <li className="pr-3">
-              <MdAccountBalance className="text-4xl transform -translate-y-1" />
+              <Link to="/">
+                <MdAccountBalance className="text-4xl transform -translate-y-1" />
+              </Link>
             </li>
           </ul>
         </div>

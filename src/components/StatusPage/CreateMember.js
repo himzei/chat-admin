@@ -34,6 +34,7 @@ function CreateMember() {
           lecDate7: data.lecDate7,
           lecStartTime: data.lecStartTime,
           lecPeriod: data.lecPeriod,
+          lecHold: 0,
           createdAt: Date.now(),
 
           views: 0,

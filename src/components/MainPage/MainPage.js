@@ -9,9 +9,65 @@ function MainPage() {
   const [people, setPeople] = useState([]);
   const [count, setCount] = useState(0);
 
-  const onHoldClick = () => {
-    const lecEnd = "2021-10-30";
-    console.log(Moment(lecEnd).format("dddd").slice(0, 1));
+  const onHoldClick = (lecEnd, dates, id, lecHold) => {
+    const ok = window.confirm(
+      "홀드 처리하겠습니까? 되돌릴 수 없어요.\n수업종료 날짜가 수정이 되고, 홀드가 1 추가 됩니다."
+    );
+    if (ok) {
+      const lecEndNum = Moment(lecEnd).format("d");
+      const datesNum = dates.reduce((acc, cur, i) => {
+        if (cur !== false) acc.push(i + 1);
+        return acc;
+      }, []);
+
+      console.log(lecEndNum);
+      console.log(datesNum);
+
+      const num = datesNum.indexOf(lecEndNum);
+      const len = datesNum.length;
+
+      let result = 0;
+      if (num !== -1) {
+        if (num + 1 >= len) {
+          // Case 1
+          result = datesNum[0];
+        } else {
+          // Case 2
+          result = datesNum[num + 1];
+        }
+      } else {
+        const tmpArray = datesNum.filter((date) => date > lecEndNum);
+        if (tmpArray.length >= 1) {
+          // Case 3
+          result = tmpArray[0];
+        } else {
+          // Case 4
+          result = datesNum[0];
+        }
+      }
+
+      let diff = 0;
+      if (lecEndNum >= datesNum.slice(-1)[0]) {
+        diff = 7 - lecEndNum + result;
+      } else {
+        diff = result - lecEndNum;
+      }
+
+      const formatDate = new Date(lecEnd);
+
+      const resultDate = Moment(
+        formatDate.setDate(formatDate.getDate() + diff)
+      ).format("YYYY-MM-DD");
+
+      firebase
+        .firestore()
+        .collection("lectures")
+        .doc(`${id}`)
+        .update({
+          lecEnd: resultDate,
+          lecHold: lecHold + 1,
+        });
+    }
   };
 
   const onDeleteClick = async (id) => {
@@ -269,6 +325,7 @@ function MainPage() {
                             person.lecDate6,
                             person.lecDate7,
                           ]}
+                          lecHold={person.lecHold}
                         />
                       </td>
                       <td className="px-3 py-4 text-center text-sm font-medium">
@@ -289,11 +346,14 @@ function MainPage() {
                             person.lecDate6,
                             person.lecDate7,
                           ]}
+                          lecHold={person.lecHold}
                         />
                       </td>
                       <td className="px-3 py-4 text-center text-sm font-medium "></td>
                       <td className="px-3 py-4 text-center text-sm font-medium "></td>
-                      <td className="px-3 py-4 text-center text-sm font-medium "></td>
+                      <td className="px-3 py-4 text-center text-sm font-medium ">
+                        {person.lecHold}
+                      </td>
                       <td className="px-3 py-4 text-center text-sm font-medium "></td>
                       <td className="px-3 py-4 text-center text-sm font-medium "></td>
                       <td className="px-3 py-4 text-center text-sm font-medium "></td>
@@ -301,7 +361,22 @@ function MainPage() {
                         <div className="flex flex-col">
                           <div
                             className="bg-blue-500 py-1 px-1 rounded text-white mb-1"
-                            onClick={() => onHoldClick()}
+                            onClick={() =>
+                              onHoldClick(
+                                person.lecEnd,
+                                [
+                                  person.lecDate1,
+                                  person.lecDate2,
+                                  person.lecDate3,
+                                  person.lecDate4,
+                                  person.lecDate5,
+                                  person.lecDate6,
+                                  person.lecDate7,
+                                ],
+                                person.id,
+                                person.lecHold
+                              )
+                            }
                           >
                             홀드하기
                           </div>
